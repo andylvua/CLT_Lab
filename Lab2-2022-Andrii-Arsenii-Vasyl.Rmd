@@ -104,7 +104,7 @@ The next steps include detecting the errors in the received messages, correcting
 
 ```{r}
 
-correct_messages <- function (recieved_messages, H) {
+correct_messages <- function (recieved_messages, sample_size, H) {
     syndromes <- (recieved_messages %*% H) %% 2
     corrections_vector <- syndromes %*% c(1, 2, 4)
 
@@ -150,7 +150,7 @@ generate_sampling_distribution <- function (iterations, sample_size, p) {
         errors <- erros_generator(sample_size, p)
 
         recieved_messages <- apply_errors(codewords, errors)
-        corrected_messages <- correct_messages(recieved_messages, H)
+        corrected_messages <- correct_messages(recieved_messages, sample_size, H)
 
         sampling_distirbution[i] <- calculate_error_rate(corrected_messages, messages, sample_size)
     }
@@ -159,6 +159,7 @@ generate_sampling_distribution <- function (iterations, sample_size, p) {
 }
 
 sampling_distribution <- generate_sampling_distribution(1000, 100, p)
+View(sampling_distribution)
 ```
 ### 1.2. By estimating the standard deviation of the corresponding indicator of success by the standard error of your sample and using the CLT, predict the ${confidence}$ interval $(p^*-\varepsilon, p^* + \varepsilon)$, in which the estimate $\hat p$ falls with probability at least $0.95$.
 
@@ -195,12 +196,11 @@ Where $p^*$ is the probability of correct transmission of a single message. Sinc
 
 ```{r}
 evaluate_N <- function (p, epsilon) {
-    return(p*(1-p)/(epsilon^2))
+    return (ceiling(p*(1-p)/(epsilon^2)))
 }
 
 evaluate_N(mean(sampling_distribution), 0.03)
 ```
-
 
 4.  Draw the histogram of the number \(k = 0,1,2,3,4\) of errors while transmitting a \(4\)-digit binary message. Do you think it is one of the known distributions?
 
@@ -211,7 +211,7 @@ generate_histogram <- function (sample_size, p) {
     errors <- erros_generator(sample_size, p)
 
     recieved_messages <- apply_errors(codewords, errors)
-    corrected_messages <- correct_messages(recieved_messages, H)
+    corrected_messages <- correct_messages(recieved_messages, sample_size, H)
 
     decoded_messages <- decode_messages(corrected_messages)
 
@@ -225,7 +225,7 @@ generate_histogram <- function (sample_size, p) {
          xlab = "Number of errors", ylab = "Frequency")
 }
 
-generate_histogram(calculate_N(p, 0.03), p)
+generate_histogram(evaluate_N(mean(sampling_distribution), 0.03), p)
 ```
 
 #### Conclusion
