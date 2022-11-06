@@ -186,6 +186,8 @@ plot(Fs,
      lwd = 2,
      main = "Comparison of ecdf and cdf")
 curve(pnorm(x, mean = mu, sd = sigma), col = "red", lwd = 2, add = TRUE)
+#max difference
+max(abs(ecdf(sample_means)(xlims)-pnorm(xlims, mean = mean(sample_means), sd = sd(sample_means))))
 ```
 
 **Next, proceed with all the remaining steps**
