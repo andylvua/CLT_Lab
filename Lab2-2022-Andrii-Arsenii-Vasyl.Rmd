@@ -172,8 +172,8 @@ sample_means <- colMeans(matrix(rpois(n*K, lambda = mu), nrow=n))
 #### Next, calculate the parameters of the standard normal approximation
 
 ```{r}
-mu <- 0       # change this!
-sigma <- 1    # change this!
+mu <- mu
+sigma <- (mu)^0.5/2 #?????
 ```
 
 #### We can now plot ecdf and cdf
