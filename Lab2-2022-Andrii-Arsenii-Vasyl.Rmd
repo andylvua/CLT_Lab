@@ -280,44 +280,74 @@ plot(Fs,
      lwd = 2,
      main = "Comparison of ecdf and cdf")
 curve(pnorm(x, mean = mu, sd = sigma), col = "red", lwd = 2, add = TRUE)
-#max difference
+```
+#### Maximal difference between the two cdf\`s
+
+```{r}
 max(abs(ecdf(sample_means)(xlims)-pnorm(xlims, mean = mean(sample_means), sd = sd(sample_means))))
+```
+
+#### Cases when n=5, n = 10, n = 50
+
+```{r}
+plot_n <- function(n){
+K <- 1e3
+sample_means <- colMeans(matrix(rpois(n*K, lambda = mu), nrow=n))
+mu <- mu
+sigma <- (mu/n)^0.5
+xlims <- c(mu-3*sigma,mu+3*sigma)
+Fs <- ecdf(sample_means)
+plot(Fs, 
+     xlim = xlims, 
+     ylim = c(0,1),
+     col = "blue",
+     lwd = 2,
+     main = "Comparison of ecdf and cdf")
+curve(pnorm(x, mean = mu, sd = sigma), col = "red", lwd = 2, add = TRUE)
+max_difference<-max(abs(ecdf(sample_means)(xlims)-pnorm(xlims, mean = mean(sample_means), sd = sd(sample_means))))
+print(max_difference)
+}
+plot_n(10)
+plot_n(50)
 ```
 #### Theoretical bounds for N
 
 Markov bound:
 
 ```{r}
+lambda <-log(2)/(30.1*365*24*3600)
+N <-7/137*6*(10^17)
+mu <- N * lambda
 bound <- 8*10^8
 prob <- 0.95
 N_max <- (1-prob)*bound/mu
-print(N)
+print(N_max)
 ```
 
 Chernoff Bound:
 
 ```{r}
-N <- (n*prob + sqrt(n))/(prob*nu1)
-print(N)
+s<- -1
+N_max <- exp(-s*bound)*exp(mu*(s-1))
+print(N_max)
 ```
-
 CLT
 
 ```{r}
-N <- 0
-while (pnorm((bound*N-bound)/sqrt(bound)) <= 0.05){
-  N <- N + 1
+N_max <- 1
+while (pnorm((bound*N-bound)/sqrt(bound)) <= 1-prob){
+  N_max <- N_max + 1
 }
-N <- N
-print(N)
+print(N_max)
 ```
-
-Calculate n
+Prove n
 
 ```{r}
-K <- 1e3
-n <- 5
-sample_means <- colMeans(matrix(rpois(n*K, lambda = mu), nrow=n))
+k <- 1e3
+n <- 1
+summ=sum(sample_means)
+sum_k_times <- colSums(matrix(rexp(k*n, rate = mu), nrow = n))
+mean(sum_k_times > bound)
 ```
 ### Task 3.
 
