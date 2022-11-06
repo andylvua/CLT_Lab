@@ -160,8 +160,8 @@ number_of_errors
     -   calculate the number of elements of the sample which are less than critical value ($8 \times 10^8$) and calculate the empirical probability; comment whether it is close to the desired level $0.95$
 
 ```{r}
-lambda <- 1  # change this!
-N <- 100     # change this!
+lambda <- log(2)/(30.1*365*24*3600)
+N <- 7/137*6*(10^17)
 mu <- N * lambda
 K <- 1e3
 n <- 5
@@ -171,8 +171,7 @@ sample_means <- colMeans(matrix(rpois(n*K, lambda = mu), nrow=n))
 #### Next, calculate the parameters of the standard normal approximation
 
 ```{r}
-mu <- mu
-sigma <- (mu)^0.5/2 #?????
+sigma <- (mu/n)^0.5
 ```
 
 #### We can now plot ecdf and cdf
