@@ -110,7 +110,7 @@ correct_messages <- function (recieved_messages, sample_size, H) {
 
     corrected_messages <- recieved_messages
 
-    for (i in 1:100) {
+    for (i in 1:sample_size) {
       invalid_bit <- corrections_vector[i]
       if (invalid_bit != 0) {
         corrected_messages[i, invalid_bit] <- (corrected_messages[i, invalid_bit] + 1) %% 2
